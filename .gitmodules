@@ -25,3 +25,6 @@
 [submodule "bundle/bufeplorer"]
 	path = bundle/bufeplorer
 	url = git://github.com/vim-scripts/bufexplorer.zip.git
+[submodule "bundle/snipmate"]
+	path = bundle/snipmate
+	url = https://github.com/msanders/snipmate.vim.git
