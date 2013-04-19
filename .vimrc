@@ -4,7 +4,10 @@ call pathogen#infect()
 call pathogen#runtime_append_all_bundles()
 call pathogen#helptags()
 "}}}
-
+set shortmess=a
+set debug=
+set noballooneval
+"set scrolloff=10
 set nocompatible
 set noswapfile
 set encoding=utf-8
