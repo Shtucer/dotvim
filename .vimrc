@@ -85,7 +85,7 @@ set hlsearch
 "{{{ Indent
 filetype indent on
 set ai " autoindent
-set so " smartindent
+set si " smartindent
 set shiftround
 set cindent shiftwidth=4 " Set cindent on to autoinent when editing C/C++ file, with 4 shift width
 set tabstop=4 " Set tabstop to 4 characters
