@@ -40,3 +40,6 @@
 [submodule "pwerline-fonts"]
 	path = pwerline-fonts
 	url = git://github.com/Lokaltog/powerline-fonts.git
+[submodule "powerline-fonts"]
+	path = powerline-fonts
+	url = git://github.com/Lokaltog/powerline-fonts.git
