@@ -37,3 +37,6 @@
 [submodule "bundle/vimball"]
 	path = bundle/vimball
 	url = git://github.com/vim-scripts/Vimball.git
+[submodule "pwerline-fonts"]
+	path = pwerline-fonts
+	url = git://github.com/Lokaltog/powerline-fonts.git

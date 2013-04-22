@@ -31,6 +31,8 @@ if has('win32')
     set guifont=Consolas\ for\ Powerline\ FixedD:h13:cRUSSIAN
 elseif has('unix')
     set guifont=Consolas\ for\ Powerline\ FixedD\ 13
+elseif has('macvim')
+set guifont=Consolas\ for\ Powerline\ FixedD\ 1
 endif
 if has("gui_running")
 	colorscheme lordesert
