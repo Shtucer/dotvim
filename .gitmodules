@@ -37,15 +37,12 @@
 [submodule "bundle/vimball"]
 	path = bundle/vimball
 	url = git://github.com/vim-scripts/Vimball.git
-<<<<<<< HEAD
 [submodule "bundle/color-solarized"]
 	path = bundle/color-solarized
 	url = git://github.com/altercation/vim-colors-solarized.git
 [submodule "bundle/zenburn"]
 	path = bundle/zenburn
 	url = git://github.com/jnurmine/Zenburn.git
-=======
 [submodule "powerline-fonts"]
 	path = powerline-fonts
 	url = git://github.com/Lokaltog/powerline-fonts.git
->>>>>>> 6105735264716930d8147b72317092541ab57260
