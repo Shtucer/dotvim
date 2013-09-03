@@ -31,8 +31,9 @@ if has('win32')
     set guifont=Consolas\ for\ Powerline\ FixedD:h13:cRUSSIAN
 elseif has('unix')
     set guifont=Consolas\ for\ Powerline\ FixedD\ 13
-elseif has('macvim')
-set guifont=Consolas\ for\ Powerline\ FixedD\ 1
+endif
+if has('gui_macvim')
+    set guifont=Inconsolata\ for\ Powerline:h16
 endif
 if has("gui_running")
 	colorscheme lordesert
@@ -184,7 +185,7 @@ let g:tagbar_iconchars = ['►', '▼']
 
 "}}}
 "{{{ Winmanager
-let g:winManagerWindowLayout = "ProjectExplorer,CMakeProject,FileExplorer|TagbarExplorer,BufExplorer"
+let g:winManagerWindowLayout = "ProjectExplorer,FileExplorer|TagbarExplorer,BufExplorer"
 "}}}
 "{{{ Project
 let g:proj_flags = "imtsb"
@@ -197,7 +198,9 @@ if has('win32')
 endif
 "}}} CMakeProject
 "{{{ Powerline
-let g:Powerline_symbols = 'fancy'
+let g:Powerline_symbols = 'unicode'
+let g:Powerline_dividers_override=['►','►','<<','<']
+let g:Powerline_symbols_override = {'BRANCH': 'ψ', 'LINE': '↳',} 
 set fillchars+=stl:~
 "}}}Powerline
 "}}}
@@ -207,6 +210,10 @@ set fillchars+=stl:~
 au FileType c,cpp,h set completeopt=menuone,menu,longest
 set	cinoptions=>s,e0,n0,f0,{0,}0,^0,:0,=s,l0,b0,g0,hs,ps,ts,is,+s,c3,C0,0,(0,us,U0,w0,W0,m0,j0,)20,*30
 
+"}}}
+
+"{{{ Go
+au FileType go set omnifunc=gocomplete#Complete
 "}}}
 
 "{{{ Python

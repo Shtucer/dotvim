@@ -43,3 +43,9 @@
 [submodule "powerline-fonts"]
 	path = powerline-fonts
 	url = git://github.com/Lokaltog/powerline-fonts.git
+[submodule "bundle/gocode"]
+	path = bundle/gocode
+	url = https://github.com/Blackrush/vim-gocode
+[submodule "bundle/syntasic"]
+	path = bundle/syntasic
+	url = https://github.com/scrooloose/syntastic.git
