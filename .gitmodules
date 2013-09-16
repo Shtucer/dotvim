@@ -58,3 +58,6 @@
 [submodule "bundle/jshint"]
 	path = bundle/jshint
 	url = https://github.com/rmanalan/jshint.vim.git
+[submodule "bundle/vimpager"]
+	path = bundle/vimpager
+	url = http://github.com/rkitover/vimpager
