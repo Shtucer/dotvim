@@ -33,7 +33,7 @@ elseif has('unix')
     set guifont=Consolas\ for\ Powerline\ FixedD\ 13
 endif
 if has('gui_macvim')
-    set guifont=Inconsolata\ for\ Powerline:h16
+    set guifont=Inconsolata\ for\ Powerline:h18
 endif
 if has("gui_running")
 	colorscheme lordesert
@@ -197,6 +197,12 @@ if has('win32')
     let g:cmake_project_keys='-G "MinGW Makefiles"'
 endif
 "}}} CMakeProject
+"{{{ Jedi Vim
+let g:jedi#auto_initialization=1
+let g:jedi#auto_vim_configuration=1
+let g:jedi#force_py_version=3 
+"}}}"
+
 "{{{ Powerline
 let g:Powerline_symbols = 'unicode'
 let g:Powerline_dividers_override=['►','►','<<','<']
@@ -302,7 +308,7 @@ function s:CheckIfExpandTab()
 endfunction
 
 au FileType python set foldmethod=indent
-au FileType python set omnifunc=pythoncomplete#Complete
+"au FileType python set omnifunc=pythoncomplete#Complete
 
 au FileType python set completeopt-=preview
 
