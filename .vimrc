@@ -224,48 +224,49 @@ au FileType go set omnifunc=gocomplete#Complete
 
 "{{{ Python
 "
-let g:pymode_folding = 1
-let g:pymode_utils_whitespaces = 1
-"{{{ Pymode highlight
-" Enable pymode's custom syntax highlighting
-let g:pymode_syntax = 1
+"let g:pymode = 0
+"let g:pymode_folding = 1
+"let g:pymode_utils_whitespaces = 1
+""{{{ Pymode highlight
+"" Enable pymode's custom syntax highlighting
+"let g:pymode_syntax = 1
 
-" Enable all python highlightings
-let g:pymode_syntax_all = 1
+"" Enable all python highlightings
+"let g:pymode_syntax_all = 1
 
-" Highlight "print" as function
-let g:pymode_syntax_print_as_function = 0
+"" Highlight "print" as function
+"let g:pymode_syntax_print_as_function = 0
 
-" Highlight indentation errors
-let g:pymode_syntax_indent_errors = g:pymode_syntax_all
+"" Highlight indentation errors
+"let g:pymode_syntax_indent_errors = g:pymode_syntax_all
 
-" Highlight trailing spaces
-let g:pymode_syntax_space_errors = g:pymode_syntax_all
+"" Highlight trailing spaces
+"let g:pymode_syntax_space_errors = g:pymode_syntax_all
 
-" Highlight string formatting
-let g:pymode_syntax_string_formatting = g:pymode_syntax_all
+"" Highlight string formatting
+"let g:pymode_syntax_string_formatting = g:pymode_syntax_all
 
-" Highlight str.format syntax
-let g:pymode_syntax_string_format = g:pymode_syntax_all
+"" Highlight str.format syntax
+"let g:pymode_syntax_string_format = g:pymode_syntax_all
 
-" Highlight string.Template syntax
-let g:pymode_syntax_string_templates = g:pymode_syntax_all
+"" Highlight string.Template syntax
+"let g:pymode_syntax_string_templates = g:pymode_syntax_all
 
-" Highlight doc-tests
-let g:pymode_syntax_doctests = g:pymode_syntax_all
+"" Highlight doc-tests
+"let g:pymode_syntax_doctests = g:pymode_syntax_all
 
-" Highlight builtin objects (__doc__, self, etc)
-let g:pymode_syntax_builtin_objs = g:pymode_syntax_all
+"" Highlight builtin objects (__doc__, self, etc)
+"let g:pymode_syntax_builtin_objs = g:pymode_syntax_all
 
-" Highlight builtin functions
-let g:pymode_syntax_builtin_funcs = g:pymode_syntax_all
+"" Highlight builtin functions
+"let g:pymode_syntax_builtin_funcs = g:pymode_syntax_all
 
-" Highlight exceptions
-let g:pymode_syntax_highlight_exceptions = g:pymode_syntax_all
+"" Highlight exceptions
+"let g:pymode_syntax_highlight_exceptions = g:pymode_syntax_all
 
-" For fast machines
-let g:pymode_syntax_slow_sync = 0"
-"}}}
+"" For fast machines
+"let g:pymode_syntax_slow_sync = 0"
+""}}}
 
 au FileType python call s:CheckIfExpandTab() " if edit python scripts, check if have \t. ( python said: the programme can only use \t or not, but can't use them together )
 function s:CheckIfExpandTab()
