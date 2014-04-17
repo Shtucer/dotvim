@@ -50,7 +50,11 @@ function! s:Project(filename) " <<<
         let filename=bufname(g:proj_running)
     else
         if strlen(a:filename) == 0
-            let filename ='~/.vimprojects'      " Default project filename
+            if(filereadable(getcwd() . '/.vimproject'))
+                let filename = getcwd() . '/.vimproject'
+            else
+                let filename ='~/.vimprojects'      " Default project filename
+            endif
         else
             let filename = a:filename
         endif
@@ -1280,7 +1284,7 @@ function! s:Project(filename) " <<<
             cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
             nnoremap <buffer> <F1> :let g:proj_doinghelp = 1<CR><F1>
             cnoremap <buffer> bnext <Nop>
-            cnoremap <buffer> e <Nop>
+            " cnoremap <buffer> e <Nop>
 
             nnoremap <buffer> <silent> i :setlocal modifiable<cr>i
             " This is to avoid changing the buffer, but it is not fool-proof.
