@@ -7,7 +7,9 @@ call pathogen#helptags()
 "}}}
 set shortmess=a
 set debug=
-set noballooneval
+if has('balloon_eval')
+    set noballooneval
+endif
 "set scrolloff=10
 set nocompatible
 set noswapfile
