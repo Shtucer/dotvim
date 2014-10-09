@@ -1,5 +1,6 @@
-" vim:set fdm=marker:fen:fdl=4:
 "{{{ Pathogen
+set modeline
+set modelines=5
 call pathogen#infect()
 call pathogen#runtime_append_all_bundles()
 call pathogen#helptags()
@@ -22,6 +23,7 @@ set wildmenu
 set wildmode=full
 set wildignore+=*.o,*.obj,.git,*.pyc
 
+
 set pumheight=8 " Keep a small completion window
 set matchpairs+=<:>
 "{{{ GUI
@@ -29,14 +31,18 @@ if has('win32')
 "    set guifont=Consolas:h13:cRUSSIAN
 "    set guifont=DejaVu_Sans_Mono_for_Powerline:h13:cRUSSIAN
     set guifont=Consolas\ for\ Powerline\ FixedD:h13:cRUSSIAN
-elseif has('unix')
+elseif has('unix') && !has('gui_macvim')
     set guifont=Consolas\ for\ Powerline\ FixedD\ 13
 endif
 if has('gui_macvim')
-    set guifont=Inconsolata\ for\ Powerline:h18
+"    set guifont=Inconsolata\ for\ Powerline:h18
+"    set guifont=Ubuntu\ Mono\ for\ Powerline:h18
+    set guifont=Menlo:h14
+    set lines=999 columns=9999
+    set macmeta
 endif
 if has("gui_running")
-	colorscheme lordesert
+	colorscheme zenburn
 else
 	colorscheme desert 
 endif
@@ -117,14 +123,20 @@ map <silent> <leader>ev :e $MYVIMRC<CR>
 map <silent> <leader>/ :nohl<cr>
 set backspace=indent,eol,start
 
+"" Set working directory
+nnoremap <leader>. :lcd %:p:h<CR>
+
 map <silent> <C-s> :w<cr>
 imap <silent> <C-s> <esc>:w<cr>
 map <silent> <F8> :WMToggle<cr>
 imap <silent> <F8> <esc>:WMToggle<cr>
 
+map <silent> <leader>w :set wrap!<cr>
+map <silent> <leader>n :set number!<cr>
+map <silent> <leader>rn :set relativenumber!<cr>
 " Buffer switching
-map <silent> <C-Tab> :bn<cr>
 map <silent> <C-S-Tab> :bp<cr>
+map <silent> <C-Tab> :bn<cr>
 imap <silent> <C-Tab> <esc>:bn<cr>
 imap <silent> <C-S-Tab> <esc>:bp<cr>
 
@@ -146,46 +158,94 @@ imap <silent> <S-Insert> <esc> "+gp
 vmap <C-X> "+x
 
 
-nmap <silent><C-o> :browse confirm e<cr>
-vmap <silent><C-o> <esc>:browse confirm e<cr>
-imap <silent><C-o> <esc>:browse confirm e<cr>
+" Autocomplete remap to Control-Space
+imap <C-Space> <C-X><C-O>
+
+" Drag line/lines verticaly
+noremap <A-j> :m+<CR>
+noremap <A-k> :m-2<CR>
+inoremap <A-j> <Esc>:m+<CR>
+inoremap <A-k> <Esc>:m-2<CR>
+vnoremap <A-j> :m'>+<CR>gv
+
+nmap <silent><leader>o :browse confirm e<cr>
+vmap <silent><leader>o <esc>:browse confirm e<cr>
+" imap <silent><C-S-O> <esc>:browse confirm e<cr>
+
+" copy paragraph
+noremap cp yap<S-}>p
 
 map <silent><C-S-Up> :resize +2<cr>
 map <silent><C-S-Down> :resize -2<cr>
 map <silent><C-S-Right> :vertical resize +2<cr>
 map <silent><C-S-Left> :vertical resize -2<cr>
-
 " set Ctrl+j in insert mode, like VS.Net
-imap <unique> <C-j> <C-X><C-O>
+"imap <unique> <C-j> <C-X><C-O>
 "imap <unique> <C-Tab> <C-X><C-O>
 
 " open/close the quickfix window
 nmap <leader>c :copen<CR>
 nmap <leader>cc :cclose<CR>
 
+" Buffer list
+nmap <leader>b :ls<CR>:buffer<Space>
 
+" Better intendation
+vnoremap > >gv
+vnoremap < <gv
+
+" Scroll and word jump
+nmap <C-j> 10j
+imap <C-j> <esc>10ji
+nmap <C-h> b
+imap <C-h> <esc>bi
+nmap <C-k> 10k
+imap <C-k> <esc>10ki
+nmap <C-l> w
+imap <C-l> <esc>wi
+nmap <C-Left> b
+nmap <C-Right> w
+nmap <C-Up> 10k
+nmap <C-Down> 10j
+imap <C-Left> <esc>bi
+imap <C-Right> <esc>wi
+imap <C-Up> <esc>10ki
+imap <C-Down> <esc>10ji
+"
 " Providing by Project plugin
 map <c-w><c-f> :FirstExplorerWindow<cr>
 map <c-w><c-b> :BottomExplorerWindow<cr>
-
+map <C-w>w <esc>:wincmd w<cr>
+map <C-w>k <esc>:wincmd k<cr>
+map <C-w>j <esc>:wincmd j<cr>
+map <c-w>h <esc>:wincmd h<cr>
+imap <C-w>w <esc>:wincmd w<cr>
+imap <C-w>k <esc>:wincmd k<cr>
+imap <C-w>j <esc>:wincmd j<cr>
+imap <c-w>h <esc>:wincmd h<cr>
 "}}}
 "{{{ Commands
-cmap w!! sudo tee % > /dev/null %
+cmap w!! w !sudo tee % > /dev/null %
 "}}}
 "{{{ Plugins
+"{{{ Auto Pairs
+let g:AutoPairs={'(':')', '[':']', '{':'}',"'":"'",'"':'"', '`':'`', '<':'>'}
+
+"}}}
 "{{{ Bufexplorer
 let g:bufExplorerResize=0
 "}}}
 "{{{ Clang Complete
 let g:clang_complete_copen=1
 let g:clang_hl_errors=1
+let g:clang_library_path="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/"
 "}}}
 "{{{ Tagbar
 let g:tagbar_iconchars = ['►', '▼']
 
 "}}}
 "{{{ Winmanager
-let g:winManagerWindowLayout = "ProjectExplorer,FileExplorer|TagbarExplorer,BufExplorer"
+let g:winManagerWindowLayout = "ProjectExplorer,FileExplorer"
 "}}}
 "{{{ Project
 let g:proj_flags = "imtsb"
@@ -200,14 +260,26 @@ endif
 "{{{ Jedi Vim
 let g:jedi#auto_initialization=1
 let g:jedi#auto_vim_configuration=1
-let g:jedi#force_py_version=3 
+let g:jedi#force_py_version=2
 "}}}"
+
+"{{{ Syntastic
+let g:syntastic_always_populate_loc_list=1
+let g:syntastic_error_symbol='✗'
+let g:syntastic_warning_symbol='⚠'
+let g:syntastic_style_error_symbol = '✗'
+let g:syntastic_style_warning_symbol = '⚠'
+let g:syntastic_auto_loc_list=1
+let g:syntastic_aggregate_errors = 1
+let g:syntastic_python_checkers=['python', 'flake8']
+"}}}
 
 "{{{ Powerline
 let g:Powerline_symbols = 'unicode'
-let g:Powerline_dividers_override=['►','►','<<','<']
 let g:Powerline_symbols_override = {'BRANCH': 'ψ', 'LINE': '↳',} 
 set fillchars+=stl:~
+"let g:Powerline_symbols = 'fancy'
+let g:Powerline_dividers_override=['►','►','◁','◁']
 "}}}Powerline
 "}}}
 
@@ -222,8 +294,40 @@ set	cinoptions=>s,e0,n0,f0,{0,}0,^0,:0,=s,l0,b0,g0,hs,ps,ts,is,+s,c3,C0,0,(0,us,
 au FileType go set omnifunc=gocomplete#Complete
 "}}}
 
+"{{{ Java 
+
+au FileType java setlocal omnifunc=javacomplete#Complete
+au FileType java setlocal completefnc=javacomplete#CompleteParamsInfo
+"}}}
+
 "{{{ Python
-"
+" python-mode                                                                   
+" https://github.com/klen/python-mode                                           
+let g:pymode_virtualenv=1 " Auto fix vim python paths if virtualenv enabled        
+let g:pymode_folding=1  " Enable python folding                                 
+let g:pymode_utils_whitespaces=0  " Do not autoremove unused whitespaces        
+map <Leader>rgd :call RopeGotoDefinition()<CR>                                  
+map <Leader>pl :PyLint<CR>                                                      
+let ropevim_enable_shortcuts=1                                                  
+let g:pymode_rope_goto_def_newwin="vnew"                                        
+let g:pymode_rope_extended_complete=0
+let g:pymode_syntax=1                                                           
+let g:pymode_syntax_builtin_objs=0                                              
+let g:pymode_syntax_builtin_funcs=0                                             
+let g:pymode_lint_ignore = "C0110 Exported"  " ignore pep257 missing docstring warning
+let g:pymode_lint_minheight = 5   " Minimal height of pylint error window          
+let g:pymode_lint_maxheight = 15  " Maximal height of pylint error window          
+let g:pymode_lint_write = 0  " Disable pylint checking every save               
+let g:pymode_run_key = "<leader>run"  " default key conflicts with jedi-vim        
+let g:pymode_lint_mccabe_complexity = 10                                        
+let g:pymode_lint_checker="pyflakes,pep8,pep257,mccabe"                         
+let g:pymode_syntax_highlight_self=0  " do not highlight self                   
+let g:pymode_rope_vim_completion=0  " use jedi-vim for completion               
+let g:pymode_rope_guess_project=0
+let g:pymode_rope_completion = 1
+let g:pymode_rope_complete_on_dot = 1
+let g:pymode_doc_key="<leader>k"  " used jedi-vim for help  
+"let g:pymode_rope=1
 "let g:pymode = 0
 "let g:pymode_folding = 1
 "let g:pymode_utils_whitespaces = 1
@@ -308,6 +412,21 @@ function s:CheckIfExpandTab()
     endif
 endfunction
 
+function! g:ActivateVirtualEnv()
+if has('python')
+py << EOF
+import os.path
+import sys
+import vim
+if 'VIRTUAL_ENV' in os.environ:
+        project_base_dir = os.environ['VIRTUAL_ENV']
+        sys.path.insert(0, project_base_dir)
+        activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+        execfile(activate_this, dict(__file__=activate_this))
+EOF
+endif
+endfunction
+call g:ActivateVirtualEnv()
 au FileType python set foldmethod=indent
 "au FileType python set omnifunc=pythoncomplete#Complete
 
@@ -317,3 +436,5 @@ autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 "}}}
 "}}}
+
+" vim: set fdm=marker fen fdl=4:

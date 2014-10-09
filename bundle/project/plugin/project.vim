@@ -51,7 +51,7 @@ function! s:Project(filename) " <<<
     else
         if strlen(a:filename) == 0
             if(filereadable(getcwd() . '/.vimproject'))
-                let filename = getcwd() . '/.vimproject'
+                let filename = getcwd() . '/.vimproject'    " Project file exists in current directory use him
             else
                 let filename ='~/.vimprojects'      " Default project filename
             endif
@@ -162,8 +162,8 @@ function! s:Project(filename) " <<<
         highlight def link projectWhiteError   Error
         highlight def link projectFlagsError   Error
         highlight def link projectFilterError  Error
-    endif ">>>
-    setlocal filetype=project
+    endif 
+    setlocal filetype=project ">>>
     " s:SortR(start, end) <<<
     " Sort lines.  SortR() is called recursively.
     "  from ":help eval-examples" by Robert Webb, slightly modified
@@ -560,7 +560,7 @@ function! s:Project(filename) " <<<
         if (match(g:proj_flags, '\Cb') != -1) && has('browse')
             " Note that browse() is inconsistent: On Win32 you can't select a
             " directory, and it gives you a relative path.
-            let dir = browse(0, 'Enter the '.absolute.'Directory to Load: ', '', '')
+            let dir = browsedir('Enter the '.absolute.'Directory to Load: ', '')
             let dir = fnamemodify(dir, ':p')
         else
             let dir = inputdialog('Enter the '.absolute.'Directory to Load: ', '')

@@ -1,1 +1,0 @@
-/HDD/Users/shtucer/.Vim
