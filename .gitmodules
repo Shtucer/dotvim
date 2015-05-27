@@ -94,9 +94,6 @@
 [submodule "bundle/vimshell"]
 	path = bundle/vimshell
 	url = https://github.com/Shougo/vimshell
-[submodule "bundle/funcoo"]
-	path = bundle/funcoo
-	url = https://github.com/rizzatti/funcoo.vim.git
 [submodule "bundle/dash.vim"]
 	path = bundle/dash.vim
 	url = https://github.com/rizzatti/dash.vim.git
