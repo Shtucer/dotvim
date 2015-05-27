@@ -20,6 +20,10 @@ function! ProjectExplorer_Start()
 
     let s:project_app_name = "winmanager"
     setlocal modifiable
+    setlocal nobuflisted
+    setlocal buftype=nofile
+    setlocal bufhidden=delete
+    setlocal hidden
     call s:Project("")
     if exists('s:lastCursorRow')
         exe s:lastCursorRow
@@ -50,8 +54,8 @@ function! s:Project(filename) " <<<
         let filename=bufname(g:proj_running)
     else
         if strlen(a:filename) == 0
-            if(filereadable(getcwd() . '/.vimproject'))
-                let filename = getcwd() . '/.vimproject'    " Project file exists in current directory use him
+            if(filereadable(getcwd() . '/.vimprojects'))
+                let filename = getcwd() . '/.vimprojects'    " Project file exists in current directory use him
             else
                 let filename ='~/.vimprojects'      " Default project filename
             endif
@@ -74,6 +78,10 @@ function! s:Project(filename) " <<<
     endif
     if !exists("g:proj_running") || (bufwinnr(g:proj_running) == -1) " Open the Project Window
         exec 'silent e '.filename
+        setlocal nobuflisted
+        setlocal buftype=nofile
+        setlocal bufhidden=delete
+        setlocal hidden 
         if match(g:proj_flags, '\CF') == -1      " We're floating
             "            silent! wincmd H
             " exec 'vertical resize '.g:proj_window_width

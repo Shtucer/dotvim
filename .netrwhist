@@ -1,4 +1,10 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
-let g:netrw_dirhist_1='/HDD/Users/shtucer/devtools/dotvim/bundle/project'
-let g:netrw_dirhist_2='/HDD/Users/shtucer/devtools/dotvim/bundle/project/plugin'
+let g:netrw_dirhist_cnt =8
+let g:netrw_dirhist_1='/HDD/Users/shtucer/.vim/bundle/vimside/data'
+let g:netrw_dirhist_2='/HDD/Users/shtucer/.vim/bundle/vimside/data/vimside'
+let g:netrw_dirhist_3='/HDD/Users/shtucer/.vim/bundle/vimside/data'
+let g:netrw_dirhist_4='/HDD/Users/shtucer/.vim/bundle/vimside'
+let g:netrw_dirhist_5='/HDD/Users/shtucer/.vim/bundle/vimside/autoload'
+let g:netrw_dirhist_6='/HDD/Users/shtucer/.vim/bundle/vimside/autoload/vimside'
+let g:netrw_dirhist_7='/HDD/Users/shtucer/.vim/bundle/vimside/autoload/vimside/ensime'
+let g:netrw_dirhist_8='/HDD/Users/shtucer/.vim/bundle/vimside/autoload/vimside'

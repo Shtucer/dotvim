@@ -662,18 +662,25 @@ endfunction " }}}
 " the BufDelete event.
 "
 function! <SID>RefreshWinManager(...)
+	let _split = &splitbelow
+
 	" refreshes the window layout and the displayes of windows which trigger
 	" on autocommands.
-	
+	let tempFileName = tempname()	
 	if a:0 > 0 && a:1 == "Bufdelete"
 		call WM_ERRORMSG('+RefreshWinManager: Bufdelete due to '.bufname(expand('<abuf>')).' ('.expand('<abuf>').')')
+		if g:persistentBehaviour && s:OnlyExplorerWindowsOpen()
+			call WM_ERRORMSG('+RefreshWinManager: deleted last non-Explorer window. Create empty buffer in EditArea')
+			call WM_ERRORMSG('+RefreshWinManager: '.s:tempFileName)
+			call WinManagerFileEdit("".tempFileName, _split)
+			
+		end
 	else
 		call WM_ERRORMSG('+RefreshWinManager: BufEnter due to '.bufname(bufnr('%')).' ('.bufnr('%').')')
 	end
 
 	" make a note of whether this refresh was triggered by the BufDelete event
 	" or not.
-	let _split = &splitbelow
 	if a:0 > 0 && a:1 == "BufDelete"
 		let BufDelete = 1
 	else
@@ -682,7 +689,9 @@ function! <SID>RefreshWinManager(...)
 	" do the push pop thing irrespective of whether we do the rest of the
 	" stuff or not.
 	if BufDelete
+
 		call s:MRUPop()
+
 	else
 		call s:MRUPush()
 	end
@@ -696,7 +705,11 @@ function! <SID>RefreshWinManager(...)
 	if !g:persistentBehaviour && s:OnlyExplorerWindowsOpen()
 		qa
 	end
-	
+	" open empty buffer in EditorArea
+	if g:persistentBehaviour && s:OnlyExplorerWindowsOpen()
+		call WM_ERRORMSG('+RefreshWinManager: deleted last non-Explorer window. Create empty buffer in EditArea')
+		"call WinManagerFileEdit("".tempFileName, _split)
+	end
 	" this magic statement is curing the syntax losing problem. WHY?
 	call WinManagerSuspendAUs()
 	let g:numRefs = g:numRefs + 1
@@ -755,7 +768,7 @@ function! <SID>RefreshWinManager(...)
 			let nearestGroupDist = 1000000
 			let j = 1
 			while j <= s:numExplorerGroups
-				
+
 				let windownum = s:IsExplorerGroupVisible(j)
 				if windownum != -1
 					let dist = ( (j-i) < 0 ? (i-j) : (j-i) )
@@ -814,13 +827,13 @@ function! <SID>RefreshWinManager(...)
 
 	" refreshing done, now return back to where we were originally.
 	call <SID>GotoWindow(currentWindowNumber)
-	
+
 	" however, we still have to "repair" the actual @% and @# registers, in
 	" case we are returning to a listed buffer.  also should do this only for
 	" a BufEnter event. For a BufDelete event, the do this only if the current
 	" buffer is not the buffer being deleted.
 	if buflisted(bufnr("%")) && !isdirectory(bufname("%")) && 
-	\	( !BufDelete || ( bufnr('%') != expand('<abuf>') ) )
+				\	( !BufDelete || ( bufnr('%') != expand('<abuf>') ) )
 		call <SID>RepairAltRegister()
 	end
 
@@ -835,9 +848,9 @@ function! <SID>ResizeAllExplorers()
 		if explorerWinNum != -1
 			exe 'let explorerName = s:explorerName_'.i
 			if exists('*'.explorerName.'_ReSize') && !s:IsOnlyVertical()
-			" if a resize() function exists for this explorer and there
-			" is some window above and/or below this window, then call its
-			" resize function. this allows for dynamic resizing.
+				" if a resize() function exists for this explorer and there
+				" is some window above and/or below this window, then call its
+				" resize function. this allows for dynamic resizing.
 				call s:GotoWindow(explorerWinNum)
 				exe 'call '.explorerName.'_ReSize()'
 			end
@@ -993,9 +1006,9 @@ function! <SID>GotoNextExplorerInGroup(name, ...)
 	let curbufnum = bufnr('%')
 	let somethingDisplayed = s:EditNextVisibleExplorer(grpn, memn, dir, 'e')
 	if !somethingDisplayed && curbufnum != bufnr('%')
-	   	" now start the next explorer using its title
-	   	exe 'let title = s:explorerTitle_'.numn
-	   	exe 'silent! e '.title
+		" now start the next explorer using its title
+		exe 'let title = s:explorerTitle_'.numn
+		exe 'silent! e '.title
 		setlocal nobuflisted
 		setlocal bufhidden=delete
 		setlocal buftype=nofile
@@ -1015,7 +1028,7 @@ endfunction
 " edit the first possible explorer after memn belonging to groun. use editcmd
 " to form the new window.
 function! <SID>EditNextVisibleExplorer(grpn, memn, dir, editcmd)
-	
+
 	" then try to find the number of the next member.
 	let startmn = (a:memn ? a:memn : 1)
 	let nextmn = a:memn + a:dir
@@ -1026,10 +1039,10 @@ function! <SID>EditNextVisibleExplorer(grpn, memn, dir, editcmd)
 	let once = 0
 	" enter this loop at least once
 	while nextmn != startmn || !once
-	" cycle through the next explorers in this group finding out the next
-	" explorer which says its able to display anything at all.
+		" cycle through the next explorers in this group finding out the next
+		" explorer which says its able to display anything at all.
 		let once = 1
-	
+
 		let nextEN = s:FindExplorerInGroup(a:grpn, nextmn)
 		" if the next member doesnt exist wrap around.
 		if nextEN == -1 
@@ -1194,277 +1207,277 @@ function! WinManagerGetLastEditedFile(...)
 		else
 			return ret
 		end
-endfunction
+	endfunction
 
 
-" exported function. returns 1 if any of the explorer windows are open,
-" otherwise returns 0.
-function! IsWinManagerVisible()
-	let i = 1
-	while i <= s:numExplorers
-		if s:IsExplorerVisible(i) != -1
-			return 1
-		end
-		let i = i + 1
-	endwhile
-	return 0
-endfunction
-
-
-" close all the visible explorer windows.
-function! <SID>CloseWindowsManager()
-	call WinManagerSuspendAUs()
-
-	let i = 1
-	while i <= bufnr('$')
-		let explNum = s:IsExplorerBuffer(i)
-		if explNum > 0 && bufwinnr(i) != -1
-			exe 'bd '.i
-		end
-		let i = i + 1
-	endwhile
-
-	call WinManagerResumeAUs()
-endfunction
-
-" provides a way to examine script local variables from outside the script.
-" very handy for debugging.
-function! <SID>ShowVariableValue(...)
-	let i = 1
-	while i <= a:0
-		exe 'let arg = a:'.i
-		if exists('s:'.arg) ||
-		\  exists('*s:'.arg)
-			exe 'let val = s:'.arg
-			echomsg 's:'.arg.' = '.val
-		end
-		let i = i + 1
-	endwhile
-endfunction
-
-" the following functions are hooks provided by winmanager to external plugins
-" as a way to get winmanager to stop getting triggered on AUs. This is useful
-" when an explorer plugin triggers a BufEnter or BufDelete *internally*. For
-" example, bufexplorer.vim's "delete buffer" function triggers a BufDelete
-" function.
-"
-function! WinManagerSuspendAUs()
-	let s:commandRunning = s:commandRunning + 1
-endfunction
-function! WinManagerResumeAUs()
-	let s:commandRunning = s:commandRunning - 1
-endfunction
-function! WinManagerAUSuspended()
-	return s:commandRunning > 0
-endfunction
-
-" Another hook provided by winmanager. Normally winmanager will call the
-" plugins resize function every time the BufEnter or BufDelete event is
-" triggered. However, sometimes a plugin might change the number of lines
-" *internally*. In this case, the plugin could make a call to this function
-" which will make a safety check and then call its resize function.
-"
-function! WinManagerForceReSize(explName)
-	if !exists('s:'.a:explName.'_numberID') || !exists('*'.a:explName.'_ReSize')
-		return
-	end
-	exe 'let explNum = s:'.a:explName.'_numberID'
-	call WinManagerSuspendAUs()
-	let windowNum = s:IsExplorerVisible(explNum)
-	if windowNum == -1
-		call WinManagerResumeAUs()
-		return
-	end
-	call s:GotoWindow(windowNum)
-	if s:IsOnlyVertical()
-		call WinManagerResumeAUs()
-		return
-	end
-	if exists('*'.a:explName.'_ReSize()')
-		exe 'call '.a:explName.'_ReSize()'
-	endif
-	call WinManagerResumeAUs()
-endfunction
-
-" returns 1 if the only visible windows are explorer windows.
-function! <SID>OnlyExplorerWindowsOpen()
-	let i = 1
-	" loop over all open windows
-	while 1
-		" if we have checked all open windows and not returned yet, then it
-		" means only explorers are visible.
-		if winbufnr(i) == -1
-			return 1
-		end
-		" if this is a non-explorer window then return 0
-		if !s:IsExplorerBuffer(winbufnr(i))
-			return 0
-		end
-		let i = i + 1
-	endwhile
-endfunction
-
-" MRUPush
-function! <SID>MRUPush()
-	if buflisted(bufnr("%")) && !isdirectory(bufname("%"))
-		let _bufNbr = bufnr('%')
-		let _list = substitute(s:MRUList, ','._bufNbr.',', ',', '')
-		let s:MRUList = ','._bufNbr._list
-		unlet _bufNbr _list
-	end
-endfunction
-
-" MRUPop
-function! <SID>MRUPop()
-	let _bufNbr = expand('<abuf>')
-	let s:MRUList = substitute(s:MRUList, ''._bufNbr.',', '', '')
-	unlet _bufNbr
-endfunction
-
-" MRUGet
-function! <SID>MRUGet(slot)
-	let ret = s:Strntok2(s:MRUList, ',', a:slot)
-	if ret == ''
-		return -1
-	end
-	" This automatically returns the value as type() == 0 (for number)
-	exe 'return '.ret
-endfunction
-
-" Strntok:
-" extract the n^th token from s seperated by tok. 
-" example: Strntok('1,23,3', ',', 2) = 23
-fun! <SID>Strntok(s, tok, n)
-	return matchstr( a:s.a:tok[0], '\v(\zs([^'.a:tok.']*)\ze['.a:tok.']){'.a:n.'}')
-endfun
-
-" Strntok2
-" same as Strntok except that s is delimited by the tok character at the
-" beginning and end.
-" example: Strntok2(',1,23,3,', ',', 2) = 23
-fun! <SID>Strntok2(s, tok, n)
-	return matchstr( a:s, '\v((['.a:tok.']\zs[^'.a:tok.']*)\ze){'.a:n.'}')
-endfun
-
-" InitializeMRUList 
-"
-" initialize the MRU list. initially this will be just the buffers in the
-" order of their buffer numbers with the @% and @# leading. The MRU list
-" consists of a string of the following form: ",1,2,3,4,"
-" NOTE: there are commas at the beginning and the end. this is to make
-" identifying the position of buffers in the list easier even if they occur in
-" the beginning or end and in situations where one buffer number is part of
-" another. i.e the string "9" is part of the string "19"
-" 
-function! <SID>InitializeMRUList()
-	let nBufs = bufnr('$')
-	let _i = 1
-
-	" put the % and the # numbers at the beginning if they are listed.
-	let s:MRUList = ''
-	if buflisted(bufnr("%"))
-		let s:MRUList = ','.bufnr("%")
-	end
-	if buflisted(bufnr("#"))
-		let s:MRUList = s:MRUList.','.bufnr("#")
-	end
-	let s:MRUList = s:MRUList.','
-	
-	" then proceed with the rest of the buffers
-	while _i <= nBufs
-		" dont keep unlisted buffers in the MRU list.
-		if buflisted(_i) && bufnr("%") != _i && bufnr("#") != _i
-			let s:MRUList = s:MRUList._i.','
-		end
-		let _i = _i + 1
-	endwhile
-	" Doing this makes bufexplorer.vim display the first two listed buffers as
-	" @% and @# which they actually are when winmanager starts up after doing
-	" something like:
-	"    vim *.vim
-	"    :WMtoggle
-	let g:MRUList = s:MRUList
-endfunction
-
-if !g:defaultExplorer
-	let loaded_explorer = 1
-	"---
-	" Set up the autocommand to allow directories to be edited
-	"
-	augroup fileExplorer
-		au!
-		au VimEnter * call s:EditDir("VimEnter")
-		au BufEnter * call s:EditDir("BufEnter")
-	augroup end
-end
-
-" handles editing a directory via winmanager.
-function! <SID>EditDir(event)
-	" return immediately if this isn't a directory.
-	let name = expand("%")
-	if name == ""
-		let name = expand("%:p")
-	endif
-	if !isdirectory(name)
-		return
-	endif
-	
-	" if it is, then call the modified explorer.vim's Explore command.
-	if a:event != "VimEnter"
- 		if exists(":Explore")
- 			ExploreInCurrentWindow
- 		end
-	end
-	" if we have entered vim while editing a directory, then remove the
-	" directory buffer, and start the window layout.
-	" Note that we only start up winmanager in a VimEnter event because we
-	" want commands such as ":e /some/dir/" within vim to have the same effect
-	" as with the standard explorer.vim plugin which ships with vim.
-	"
-	" NOTE: if the user has chosen a layout where the FileExplorer is not at
-	" the top-left, this will be unintuitive.
-	if a:event == "VimEnter"
-		silent! bwipeout
-		
-		call s:StartWindowsManager()
-		call s:MRUPush()
-		call s:GotoExplorerWindow('1')
- 	end
-endfunction
-
-function! s:WinManagerReset()
-	let groupNum = 1
-	while 1
-		" if no more groups then break.	
-		let curGroup = s:Strntok(g:winManagerWindowLayout, '|', groupNum)
-		if curGroup == ''
-			break
-		end
-		
-		" otherwise extract the explorers belonging to this group and the
-		" explorer ID's etc. also protect against the same explorer being put
-		" in 2 groups.
-		let grplist = ','
-		let numlist = ','
-		let curgn = s:numExplorerGroups + 1
-
+	" exported function. returns 1 if any of the explorer windows are open,
+	" otherwise returns 0.
+	function! IsWinManagerVisible()
 		let i = 1
-		while 1
-			let name = s:Strntok(curGroup, ',', i)
-			if name == ''
-				break
+		while i <= s:numExplorers
+			if s:IsExplorerVisible(i) != -1
+				return 1
 			end
-			silent! exec 'unlet s:'.name.'_numberID'
 			let i = i + 1
 		endwhile
-		let groupNum = groupNum + 1
-	endwhile
-	let s:numExplorers = 0
-	let s:numExplorerGroups = 0
-	silent! exec "unlet s:gotExplorerTitles"
-endfunction
+		return 0
+	endfunction
 
-" restore 'cpo'
-let &cpo = s:cpo_save
-unlet s:cpo_save
-" vim:ts=4:noet:sw=4
+
+	" close all the visible explorer windows.
+	function! <SID>CloseWindowsManager()
+		call WinManagerSuspendAUs()
+
+		let i = 1
+		while i <= bufnr('$')
+			let explNum = s:IsExplorerBuffer(i)
+			if explNum > 0 && bufwinnr(i) != -1
+				exe 'bd '.i
+			end
+			let i = i + 1
+		endwhile
+
+		call WinManagerResumeAUs()
+	endfunction
+
+	" provides a way to examine script local variables from outside the script.
+	" very handy for debugging.
+	function! <SID>ShowVariableValue(...)
+		let i = 1
+		while i <= a:0
+			exe 'let arg = a:'.i
+			if exists('s:'.arg) ||
+						\  exists('*s:'.arg)
+				exe 'let val = s:'.arg
+				echomsg 's:'.arg.' = '.val
+			end
+			let i = i + 1
+		endwhile
+	endfunction
+
+	" the following functions are hooks provided by winmanager to external plugins
+	" as a way to get winmanager to stop getting triggered on AUs. This is useful
+	" when an explorer plugin triggers a BufEnter or BufDelete *internally*. For
+	" example, bufexplorer.vim's "delete buffer" function triggers a BufDelete
+	" function.
+	"
+	function! WinManagerSuspendAUs()
+		let s:commandRunning = s:commandRunning + 1
+	endfunction
+	function! WinManagerResumeAUs()
+		let s:commandRunning = s:commandRunning - 1
+	endfunction
+	function! WinManagerAUSuspended()
+		return s:commandRunning > 0
+	endfunction
+
+	" Another hook provided by winmanager. Normally winmanager will call the
+	" plugins resize function every time the BufEnter or BufDelete event is
+	" triggered. However, sometimes a plugin might change the number of lines
+	" *internally*. In this case, the plugin could make a call to this function
+	" which will make a safety check and then call its resize function.
+	"
+	function! WinManagerForceReSize(explName)
+		if !exists('s:'.a:explName.'_numberID') || !exists('*'.a:explName.'_ReSize')
+			return
+		end
+		exe 'let explNum = s:'.a:explName.'_numberID'
+		call WinManagerSuspendAUs()
+		let windowNum = s:IsExplorerVisible(explNum)
+		if windowNum == -1
+			call WinManagerResumeAUs()
+			return
+		end
+		call s:GotoWindow(windowNum)
+		if s:IsOnlyVertical()
+			call WinManagerResumeAUs()
+			return
+		end
+		if exists('*'.a:explName.'_ReSize()')
+			exe 'call '.a:explName.'_ReSize()'
+		endif
+		call WinManagerResumeAUs()
+	endfunction
+
+	" returns 1 if the only visible windows are explorer windows.
+	function! <SID>OnlyExplorerWindowsOpen()
+		let i = 1
+		" loop over all open windows
+		while 1
+			" if we have checked all open windows and not returned yet, then it
+			" means only explorers are visible.
+			if winbufnr(i) == -1
+				return 1
+			end
+			" if this is a non-explorer window then return 0
+			if !s:IsExplorerBuffer(winbufnr(i))
+				return 0
+			end
+			let i = i + 1
+		endwhile
+	endfunction
+
+	" MRUPush
+	function! <SID>MRUPush()
+		if buflisted(bufnr("%")) && !isdirectory(bufname("%"))
+			let _bufNbr = bufnr('%')
+			let _list = substitute(s:MRUList, ','._bufNbr.',', ',', '')
+			let s:MRUList = ','._bufNbr._list
+			unlet _bufNbr _list
+		end
+	endfunction
+
+	" MRUPop
+	function! <SID>MRUPop()
+		let _bufNbr = expand('<abuf>')
+		let s:MRUList = substitute(s:MRUList, ''._bufNbr.',', '', '')
+		unlet _bufNbr
+	endfunction
+
+	" MRUGet
+	function! <SID>MRUGet(slot)
+		let ret = s:Strntok2(s:MRUList, ',', a:slot)
+		if ret == ''
+			return -1
+		end
+		" This automatically returns the value as type() == 0 (for number)
+		exe 'return '.ret
+	endfunction
+
+	" Strntok:
+	" extract the n^th token from s seperated by tok. 
+	" example: Strntok('1,23,3', ',', 2) = 23
+	fun! <SID>Strntok(s, tok, n)
+		return matchstr( a:s.a:tok[0], '\v(\zs([^'.a:tok.']*)\ze['.a:tok.']){'.a:n.'}')
+	endfun
+
+	" Strntok2
+	" same as Strntok except that s is delimited by the tok character at the
+	" beginning and end.
+	" example: Strntok2(',1,23,3,', ',', 2) = 23
+	fun! <SID>Strntok2(s, tok, n)
+		return matchstr( a:s, '\v((['.a:tok.']\zs[^'.a:tok.']*)\ze){'.a:n.'}')
+	endfun
+
+	" InitializeMRUList 
+	"
+	" initialize the MRU list. initially this will be just the buffers in the
+	" order of their buffer numbers with the @% and @# leading. The MRU list
+	" consists of a string of the following form: ",1,2,3,4,"
+	" NOTE: there are commas at the beginning and the end. this is to make
+	" identifying the position of buffers in the list easier even if they occur in
+	" the beginning or end and in situations where one buffer number is part of
+	" another. i.e the string "9" is part of the string "19"
+	" 
+	function! <SID>InitializeMRUList()
+		let nBufs = bufnr('$')
+		let _i = 1
+
+		" put the % and the # numbers at the beginning if they are listed.
+		let s:MRUList = ''
+		if buflisted(bufnr("%"))
+			let s:MRUList = ','.bufnr("%")
+		end
+		if buflisted(bufnr("#"))
+			let s:MRUList = s:MRUList.','.bufnr("#")
+		end
+		let s:MRUList = s:MRUList.','
+
+		" then proceed with the rest of the buffers
+		while _i <= nBufs
+			" dont keep unlisted buffers in the MRU list.
+			if buflisted(_i) && bufnr("%") != _i && bufnr("#") != _i
+				let s:MRUList = s:MRUList._i.','
+			end
+			let _i = _i + 1
+		endwhile
+		" Doing this makes bufexplorer.vim display the first two listed buffers as
+		" @% and @# which they actually are when winmanager starts up after doing
+		" something like:
+		"    vim *.vim
+		"    :WMtoggle
+		let g:MRUList = s:MRUList
+	endfunction
+
+	if !g:defaultExplorer
+		let loaded_explorer = 1
+		"---
+		" Set up the autocommand to allow directories to be edited
+		"
+		augroup fileExplorer
+			au!
+			au VimEnter * call s:EditDir("VimEnter")
+			au BufEnter * call s:EditDir("BufEnter")
+			augroup end
+			end
+
+			" handles editing a directory via winmanager.
+			function! <SID>EditDir(event)
+				" return immediately if this isn't a directory.
+				let name = expand("%")
+				if name == ""
+					let name = expand("%:p")
+				endif
+				if !isdirectory(name)
+					return
+				endif
+
+				" if it is, then call the modified explorer.vim's Explore command.
+				if a:event != "VimEnter"
+					if exists(":Explore")
+						ExploreInCurrentWindow
+					end
+				end
+				" if we have entered vim while editing a directory, then remove the
+				" directory buffer, and start the window layout.
+				" Note that we only start up winmanager in a VimEnter event because we
+				" want commands such as ":e /some/dir/" within vim to have the same effect
+				" as with the standard explorer.vim plugin which ships with vim.
+				"
+				" NOTE: if the user has chosen a layout where the FileExplorer is not at
+				" the top-left, this will be unintuitive.
+				if a:event == "VimEnter"
+					silent! bwipeout
+
+					call s:StartWindowsManager()
+					call s:MRUPush()
+					call s:GotoExplorerWindow('1')
+				end
+			endfunction
+
+			function! s:WinManagerReset()
+				let groupNum = 1
+				while 1
+					" if no more groups then break.	
+					let curGroup = s:Strntok(g:winManagerWindowLayout, '|', groupNum)
+					if curGroup == ''
+						break
+					end
+
+					" otherwise extract the explorers belonging to this group and the
+					" explorer ID's etc. also protect against the same explorer being put
+					" in 2 groups.
+					let grplist = ','
+					let numlist = ','
+					let curgn = s:numExplorerGroups + 1
+
+					let i = 1
+					while 1
+						let name = s:Strntok(curGroup, ',', i)
+						if name == ''
+							break
+						end
+						silent! exec 'unlet s:'.name.'_numberID'
+						let i = i + 1
+					endwhile
+					let groupNum = groupNum + 1
+				endwhile
+				let s:numExplorers = 0
+				let s:numExplorerGroups = 0
+				silent! exec "unlet s:gotExplorerTitles"
+			endfunction
+
+			" restore 'cpo'
+			let &cpo = s:cpo_save
+			unlet s:cpo_save
+			" vim:ts=4:noet:sw=4
