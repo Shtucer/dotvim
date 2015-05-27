@@ -34,9 +34,6 @@
 [submodule "bundle/color-solarized"]
 	path = bundle/color-solarized
 	url = git://github.com/altercation/vim-colors-solarized.git
-[submodule "bundle/zenburn"]
-	path = bundle/zenburn
-	url = git://github.com/jnurmine/Zenburn.git
 [submodule "powerline-fonts"]
 	path = powerline-fonts
 	url = git://github.com/Lokaltog/powerline-fonts.git
@@ -103,3 +100,6 @@
 [submodule "bundle/dash.vim"]
 	path = bundle/dash.vim
 	url = https://github.com/rizzatti/dash.vim.git
+[submodule "bundle/zenburn"]
+	path = bundle/zenburn
+	url = https://github.com/jnurmine/Zenburn
