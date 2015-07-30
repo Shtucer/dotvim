@@ -1,6 +1,6 @@
 [Vicast.org](http://vimcasts.org/episodes/synchronizing-plugins-with-git-submodules-and-pathogen/)
 
-# Install plugins as submodules
+## Install plugins as submodules
 
 With pathogen installed, it’s now possible to keep the files for each plugin together, which means that every plugin can be kept in its own git repository. The best way to do this is to use git submodules, which are designed especially for the purpose of keeping git repositories within a git repository.
 
@@ -14,7 +14,7 @@ git add .
 git commit -m "Install Fugitive.vim bundle as a submodule."
 ```
 
-# Installing your Vim environment on another machine
+## Installing your Vim environment on another machine
 
 Once your vim configuration is under version control, it’s quite straightforward to import your settings to any machine that has git installed. If you followed the instructions above to put your vimrc and plugins in a dotvim directory, then you can follow these steps to synchronise them to another machine:
 
@@ -34,7 +34,7 @@ As Marcin Kulik points out in the comments below, the last two git commands can 
 git submodule update --init
 ```
 
-# Upgrading a plugin bundle
+## Upgrading a plugin bundle
 
 At some point in the future, the fugitive plugin might be updated. To fetch the latest changes, go into the fugitive repository, and pull the latest version:
 
@@ -43,7 +43,7 @@ cd ~/.vim/bundle/fugitive
 git pull origin master
 ```
 
-# Upgrading all bundled plugins
+## Upgrading all bundled plugins
 
 You can use the foreach command to execute any shell script in from the root of all submodule directories. To update to the latest version of each plugin bundle, run the following:
 
