@@ -24,13 +24,14 @@ function! ProjectExplorer_Start()
     setlocal buftype=nofile
     setlocal bufhidden=delete
     setlocal hidden
-    call s:Project("")
+
     if exists('s:lastCursorRow')
         exe s:lastCursorRow
         exe 'normal! '.s:lastCursorColumn.'|'
     endif
     let b:displayMode = "winmanager"
     setlocal filetype=project
+    call s:Project("")
 endfunction
 
 function! ProjectExplorer_IsValid()
@@ -130,6 +131,8 @@ function! s:Project(filename) " <<<
         setlocal foldenable foldmethod=marker foldmarker={,} commentstring=%s foldcolumn=4 nonumber noswapfile shiftwidth=1
         setlocal foldtext=ProjFoldText() nobuflisted nowrap
         setlocal winwidth=1
+        setlocal nonu
+        setlocal nornu
         if match(g:proj_flags, '\Cn') != -1
             setlocal number
         endif

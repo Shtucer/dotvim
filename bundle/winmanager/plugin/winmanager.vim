@@ -394,6 +394,7 @@ function! <SID>StartWindowsManager()
         " au BufDelete ^[^\[]* call <SID>RefreshWinManager("BufDelete")
 		au BufEnter * call <SID>RefreshWinManager()
 		au BufDelete * call <SID>RefreshWinManager("BufDelete")
+		au BufWipeout * call <SID>RefreshWinManager("BufDelete")
 	augroup END
 	call WM_ERRORMSG('~StartWindowsManager: done setting up ACs')
 
@@ -672,8 +673,8 @@ function! <SID>RefreshWinManager(...)
 		if g:persistentBehaviour && s:OnlyExplorerWindowsOpen()
 			call WM_ERRORMSG('+RefreshWinManager: deleted last non-Explorer window. Create empty buffer in EditArea')
 			call WM_ERRORMSG('+RefreshWinManager: '.s:tempFileName)
-			call WinManagerFileEdit("".tempFileName, _split)
-			
+			" call WinManagerFileEdit("".tempFileName, _split)
+
 		end
 	else
 		call WM_ERRORMSG('+RefreshWinManager: BufEnter due to '.bufname(bufnr('%')).' ('.bufnr('%').')')
@@ -705,10 +706,27 @@ function! <SID>RefreshWinManager(...)
 	if !g:persistentBehaviour && s:OnlyExplorerWindowsOpen()
 		qa
 	end
-	" open empty buffer in EditorArea
+	" open any buffer or empty buffer in EditorArea
 	if g:persistentBehaviour && s:OnlyExplorerWindowsOpen()
 		call WM_ERRORMSG('+RefreshWinManager: deleted last non-Explorer window. Create empty buffer in EditArea')
-		"call WinManagerFileEdit("".tempFileName, _split)
+		" try to switch to editable buffer
+   "     let bufs = ""
+		"redir => bufs
+		"silent buffers
+		"redir END
+		"let bufsar = split(bufs,'\n')
+		"echo "len of buffs: ".len(bufsar)
+		"if len(bufsar) == 0
+			"call WinManagerFileEdit("".tempFileName, 0)
+		"else
+			"for buf in bufsar
+				"let n = str2nr(split(buf,'')[0])
+				"if n != bufnr("%")
+					"call WinManagerFileEdit(expand("#".n.":p"), 0)
+				"endif
+				""			call WinManagerFileEdit(-1, 0)
+			"endfor
+		"endif
 	end
 	" this magic statement is curing the syntax losing problem. WHY?
 	call WinManagerSuspendAUs()
@@ -1177,6 +1195,7 @@ function! <SID>IsExplorerBuffer(num)
 		if exists('s:explorerBufNum_'.i)
 			exe 'let bufnum = s:explorerBufNum_'.i
 			if bufnum == a:num
+				call WM_ERRORMSG('It Explorer Window: '.bufnum.'->'.a:num)
 				return i
 			end
 		end
