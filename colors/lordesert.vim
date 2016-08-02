@@ -44,7 +44,8 @@ hi IncSearch	guifg=slategrey guibg=khaki
 hi LineNr guifg=lightblue
 hi ModeMsg	guifg=goldenrod
 hi MoreMsg	guifg=SeaGreen
-hi NonText	guifg=LightBlue guibg=#272c2d
+"hi NonText	guifg=LightBlue guibg=#272c2d
+hi NonText	guifg=slategray guibg=#272c2d
 hi Question	guifg=springgreen
 hi Search	guibg=peru guifg=wheat
 hi SpecialKey	guifg=yellowgreen
