@@ -1,1 +1,0 @@
-winmanager.vmb: call delete('/home/shtucer/.vim/doc/winmanager.txt')|call delete('/home/shtucer/.vim/plugin/winfileexplorer.vim')|call delete('/home/shtucer/.vim/plugin/winmanager.vim')|call delete('/home/shtucer/.vim/plugin/wintagexplorer.vim')

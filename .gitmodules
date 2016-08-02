@@ -9,7 +9,7 @@
 	url = https://github.com/klen/python-mode.git
 [submodule "bundle/clang_complete"]
 	path = bundle/clang_complete
-	url = git@github.com:myint/clang-complete.git
+	url = https://github.com/Rip-Rip/clang_complete.git
 [submodule "bundle/nerdcommenter"]
 	path = bundle/nerdcommenter
 	url = https://github.com/scrooloose/nerdcommenter.git
@@ -100,3 +100,21 @@
 [submodule "bundle/zenburn"]
 	path = bundle/zenburn
 	url = https://github.com/jnurmine/Zenburn
+[submodule "bundle/yowish-color"]
+	path = bundle/yowish-color
+	url = https://github.com/kabbamine/yowish.vim
+[submodule "bundle/emmet-vim"]
+	path = bundle/emmet-vim
+	url = https://github.com/mattn/emmet-vim
+[submodule "bundle/djangohtml"]
+	path = bundle/djangohtml
+	url = https://github.com/Shtucer/vim-htmldjango_omnicomplete
+[submodule "bundle/htmldjango_completion"]
+	path = bundle/htmldjango_completion
+	url = https://github.com/Shtucer/vim-htmldjango_omnicomplete
+[submodule "bundle/bufonly"]
+	path = bundle/bufonly
+	url = https://github.com/vim-scripts/BufOnly.vim
+[submodule "bundle/indentLine"]
+	path = bundle/indentLine
+	url = https://github.com/Yggdroot/indentLine

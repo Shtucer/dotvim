@@ -2,3 +2,5 @@
 *~
 *eclim*
 .netrwhist
+**/__pycache__
+**/tags

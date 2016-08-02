@@ -26,8 +26,7 @@ set title
 set wildmenu
 set wildmode=list:longest
 set wildignore+=*.o,*.obj,.git,*.pyc
-
-let $GOPATH="/HDD/Users/shtucer/opt/go"
+let $GOPATH="/HDD/Users/shtucer/Projects/go"
 
 set pumheight=8 " Keep a small completion window
 set matchpairs+=<:>
@@ -43,14 +42,18 @@ if has('gui_macvim')
 "    set guifont=Inconsolata\ for\ Powerline:h16
 "    set guifont=Ubuntu\ Mono\ for\ Powerline:h17
 "    set guifont=Menlo:h14
-    set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h14
+"    set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h14
+    set guifont=InputMono\ Thin:h12
     set lines=999 columns=9999
     set macmeta
 endif
 if has("gui_running")
-	colorscheme zenburn-no-bold
+"	colorscheme zenburn-no-bold
+    colorscheme yowish
 else
-	colorscheme desert
+"	colorscheme desert
+    colorscheme yowish
+    syntax on
 endif
 "language mes en
 set guioptions-=m
@@ -112,8 +115,11 @@ set softtabstop=4
     let g:indent_guides_start_level=2
     let g:indent_guides_guide_size=1
     let g:indent_guides_space_guides=4
-    let g:indent_guides_enable_on_vim_startup=1
+    let g:indent_guides_enable_on_vim_startup=0
 
+    let g:indentLine_char="│"
+    let g:indentLine_color_gui = "#A4E57E"
+    let g:indentLine_enabled = 1
 "}}}
 "}}}
 
@@ -210,22 +216,22 @@ map <silent><C-S-Left> :vertical resize -2<cr>
 
 " open/close the quickfix window
 nmap <leader>c :copen<CR>
-nmap <leader>cc :cclose<CR>
+nmap <leader>C :cclose<CR>
 
 " Buffer list
 nmap <leader>b :ls<CR>:buffer<Space>
-
+nmap <leader>be :BufExplorer<CR>
 " Better intendation
 vnoremap > >gv
 vnoremap < <gv
 
 " Scroll and word jump
-nmap <C-j> 10j
-imap <C-j> <esc>10ji
+nmap <C-j> 10jzz
+imap <C-j> <esc>10jzzi
 nmap <C-h> b
 imap <C-h> <esc>bi
-nmap <C-k> 10k
-imap <C-k> <esc>10ki
+nmap <C-k> 10kzz
+imap <C-k> <esc>10kzzi
 nmap <C-l> w
 imap <C-l> <esc>wi
 nmap <C-Left> b
@@ -332,12 +338,13 @@ let g:tagbar_type_go = {
 
 "}}}
 "{{{ Winmanager
-let g:winManagerWindowLayout = "ProjectExplorer,FileExplorer"
-"let g:winManagerWindowLayout = "ProjectExplorer,NERDTree"
-let g:debugWinManager = 1
+"let g:winManagerWindowLayout = "ProjectExplorer,FileExplorer"
+let g:winManagerWindowLayout = "ProjectExplorer,NERDTree"
+let g:debugWinManager = 0
 "}}}
 "{{{ Project
 let g:proj_flags = "imtsb"
+au BufCreate,BufEnter,BufLeave *.vimprojects :setlocal nonu nornu
 
 "}}}
 
@@ -375,7 +382,8 @@ let g:Powerline_dividers_override=['►','►','◁','◁']
 "let g:airline_right_sep="◁"
 let g:airline#extensions#tabline#enabled=1
 let g:airline_powerline_fonts=1
-let g:airline_theme="solarized"
+"let g:airline_theme="solarized"
+let g:airline_theme="yowish"
 
 "{{{ File type specific
 "{{{ C++
@@ -390,10 +398,21 @@ set	cinoptions=>s,e0,n0,f0,{0,}0,^0,:0,=s,l0,b0,g0,hs,ps,ts,is,+s,c3,C0,0,(0,us,
 "}}}
 
 "{{{ Go
-let g:go_fmt_autosave = 0
+let g:go_fmt_autosave = 1
 au FileType go set expandtab
-au BufNew,BufEnter *.go :set expandtab
+
+au FileType go nmap <leader>gi :GoImport 
+au FileType go nmap <leader>i <Plug>(go-info)
+au FileType go nmap <leader>K <Plug>(go-doc)
+
+au BufNew,BufEnter *.go :setlocal expandtab
 "au FileType go set omnifunc=go#complete#Complete
+"
+let g:go_highlight_methods=1
+let g:go_highlight_extra_types=1
+let g:go_highlight_operators=1
+let g:go_highlight_functions=1
+
 "}}}
 
 "{{{ Java/Scala
@@ -541,10 +560,10 @@ if 'VIRTUAL_ENV' in os.environ:
 EOF
 "    endif
 endfunction
-"call g:ActivateVirtualEnv()
+call g:ActivateVirtualEnv()
 au FileType python set foldmethod=indent
 "au FileType python set omnifunc=pythoncomplete#Complete
-"au FileType python setlocal omnifunc=jedi#completions
+au FileType python setlocal omnifunc=jedi#completions
 
 au FileType python set completeopt-=preview
 
@@ -556,5 +575,8 @@ autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 " Tapestry template
 au BufNewFile,BufRead *.tml :set filetype=html
 
+" Vim keywords
+autocmd FileType vim setlocal keywordprg=:help 
 "}}}
+"au BufNew,BufNewFile,BufRead * i
 " vim: set fdm=marker fen fdl=4:
